@@ -11,31 +11,24 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/antchfx/htmlquery"
+	"golang.org/x/net/html"
 	"log"
-	"net/http"
 	"os"
 	"sort"
 	"strings"
 	"sync"
-	"time"
 )
 
 func getSubUrls(__url__ string) (urls []string) {
-	var res *http.Response
+	var doc *html.Node
 	var err error
 	for {
-		res, err = http.Get(__url__)
+		doc, err = htmlquery.LoadURL(__url__)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
-			time.Sleep(1 * time.Second)
+			fmt.Fprintf(os.Stderr, "%v\n", err)
 			continue
 		}
 		break
-	}
-
-	doc, err := htmlquery.Parse(res.Body)
-	if err != nil {
-		log.Fatal(err)
 	}
 	nodes := htmlquery.Find(doc, `//tr/td[@class="link"]/a/@href`)
 
