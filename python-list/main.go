@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
-	"log"
 	"os"
 	"sort"
 	"sync"
@@ -66,16 +64,8 @@ func main() {
 
 	sort.Strings(downloadUrls)
 
-	// 寫入文件
-	openMode := os.O_CREATE | os.O_TRUNC | os.O_WRONLY
-	f, err := os.OpenFile("python.txt", openMode, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	w := bufio.NewWriter(f)
+	// 写入文件
 	for _, downloadUrl := range downloadUrls {
-		w.WriteString(downloadUrl + "\n")
+		fmt.Println(downloadUrl)
 	}
-	w.Flush()
-	f.Close()
 }

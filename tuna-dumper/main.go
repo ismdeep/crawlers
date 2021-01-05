@@ -8,14 +8,11 @@ package main
  */
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
-	"log"
 	"os"
 	"sort"
-	"strings"
 	"sync"
 )
 
@@ -60,36 +57,17 @@ func getSubUrls(__url__ string) (urls []string) {
 }
 
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Print("Usage: tuna-dumper   <URL>    <RepoName> [--append]")
+	if len(os.Args) <= 1 {
+		fmt.Println("Usage: tuna-dumper   <URL>")
 		os.Exit(1)
 	}
 
 	repoUrl := os.Args[1]
-	repoName := os.Args[2]
-	appendFlag := false
-	if len(os.Args) > 3 && os.Args[3] == "--append" {
-		appendFlag = true
-	}
 
 	urls := getSubUrls(repoUrl)
 	sort.Strings(urls)
 
-	fileName := strings.Split(repoName, "/")[0]
-
-	openMode := os.O_CREATE | os.O_TRUNC | os.O_WRONLY
-	if appendFlag {
-		openMode = os.O_CREATE | os.O_WRONLY | os.O_APPEND
-	}
-
-	f, err := os.OpenFile(fileName+".txt", openMode, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	w := bufio.NewWriter(f)
 	for _, url := range urls {
-		w.WriteString(url + "\n")
+		fmt.Println(url)
 	}
-	w.Flush()
-	f.Close()
 }
