@@ -10,6 +10,7 @@ package main
 import (
 	"fmt"
 	"github.com/antchfx/htmlquery"
+	"github.com/ismdeep/ismdeep-go-utils/args_util"
 	"golang.org/x/net/html"
 	"os"
 	"sort"
@@ -56,13 +57,26 @@ func getSubUrls(__url__ string) (urls []string) {
 	return urls
 }
 
+func ShowHelpMsg() {
+	fmt.Println("Usage: tuna-dumper   -url <URL>    -out <output>    [--append]")
+}
+
 func main() {
-	if len(os.Args) <= 1 {
-		fmt.Println("Usage: tuna-dumper   <URL>")
+	if args_util.Exists("--help") {
+		ShowHelpMsg()
+		return
+	}
+
+	if !args_util.Exists("-url") || !args_util.Exists("-out") {
+		ShowHelpMsg()
 		os.Exit(1)
 	}
 
-	repoUrl := os.Args[1]
+	repoUrl := args_util.GetValue("-url")
+	appendFlag := args_util.Exists("--append")
+
+	fmt.Printf("URL: [%s]\n", repoUrl)
+	fmt.Printf("Append: %v\n", appendFlag)
 
 	urls := getSubUrls(repoUrl)
 	sort.Strings(urls)
