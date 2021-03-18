@@ -9,7 +9,6 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"github.com/antchfx/htmlquery"
 	"github.com/ismdeep/ismdeep-go-utils/args_util"
@@ -63,51 +62,6 @@ func getSubUrls(__url__ string) (urls []string) {
 
 func ShowHelpMsg() {
 	fmt.Println("Usage: tuna-dumper   -url <URL>    -a <leave_tag>    -x <remove_tag>    -out <output>    [--append]")
-}
-
-func parseOutputPath() (string, error) {
-	for i := 1; i < len(os.Args)-1; i++ {
-		if os.Args[i] == "-out" {
-			return os.Args[i+1], nil
-		}
-	}
-	return "", errors.New("[ERROR] --out argument is required")
-}
-
-func parseFilterList() []string {
-	filterList := make([]string, 0)
-	for i := 1; i < len(os.Args)-1; i++ {
-		if os.Args[i] == "-a" {
-			filterList = append(filterList, os.Args[i+1])
-		}
-	}
-	return filterList
-}
-
-func parseFilterRemoveList() []string {
-	filterRemoveList := make([]string, 0)
-	for i := 1; i < len(os.Args)-1; i++ {
-		if os.Args[i] == "-x" {
-			filterRemoveList = append(filterRemoveList, os.Args[i+1])
-		}
-	}
-	return filterRemoveList
-}
-
-func parseAppendFlag() bool {
-	for i := 1; i < len(os.Args); i++ {
-		if os.Args[i] == "--append" {
-			return true
-		}
-	}
-	return false
-}
-
-func parseUrl() (string, error) {
-	if args_util.Exists("-url") {
-		return args_util.GetValue("-url"), nil
-	}
-	return "", errors.New("[ERROR] -url not found")
 }
 
 func filter(url string, filterList []string, filterRemoveList []string) bool {
@@ -166,7 +120,7 @@ func main() {
 			return
 		}
 	} else {
-		f, err = os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY, 0644)
+		f, err = os.OpenFile(outputPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Fatalf("[ERROR]: can not open file.\n")
 			return
